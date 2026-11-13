@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>stelint: an English compiler for code comments and Markdown</title>
+    <meta name="description" content="stelint checks code comments and Markdown against your word lists and your project dictionary. The same text always gives the same diagnostics, with no LLM and no network." />
+    <meta name="theme-color" content="#050506" />
+    <meta property="og:title" content="stelint: an English compiler for code comments and Markdown" />
+    <meta property="og:description" content="stelint checks the comments and the Markdown files that agents write. A word that is not in your word lists or your dictionary is an error." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="./"><span class="brand-mark" aria-hidden="true"></span>stelint</a>
+        <span class="chip">beta</span>
+        <nav class="nav" aria-label="Pages">
+          <a href="./" aria-current="page">Start</a>
+          <a href="how.html">How it works</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- hero -->
+      <section class="hero">
+        <div class="wrap">
+          <p class="eyebrow rv"><span class="n">stelint 0.2</span> Rust and Markdown</p>
+          <h1 class="mirror-title rv">
+            <span>A compiler for <span class="ok">English.</span></span>
+            <span class="reflect" aria-hidden="true"><span>A compiler for <span class="ok">English.</span></span></span>
+          </h1>
+          <div class="horizon"></div>
+          <div class="hero-sub">
+            <div class="rv">
+              <p class="lede">
+                stelint checks the comments and the documents that agents write. An agent can use only the words of
+                your word lists and your dictionary. A bad sentence fails the build.
+              </p>
+              <div class="actions">
+                <a class="btn primary" href="#try">Try it</a>
+                <a class="btn" href="how.html">How it works</a>
+              </div>
+            </div>
+            <div class="term rv" aria-label="stelint in a shell">
+              <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
+              <div id="term-body" data-nolint></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 01 the editor -->
+      <section id="editor">
+        <div class="wrap">
+          <h2 class="rv wide">Make your agent write clear comments and documents.</h2>
+
+          <div class="stage rv" id="stage">
+            <div class="under-tabs">
+              <div class="tabs" id="tabs" role="tablist" aria-label="Examples"></div>
+              <div class="toggle" id="view-toggle" role="group" aria-label="View">
+                <button type="button" data-v="before">Before</button>
+                <button type="button" data-v="split">Half</button>
+                <button type="button" data-v="after">After</button>
+              </div>
+            </div>
+            <p class="pain-line" id="pain-line" data-nolint></p>
+            <div class="compare-wrap">
+              <div class="compare" id="compare" data-nolint></div>
+              <div class="mirror" id="mirror" aria-hidden="true"></div>
+            </div>
+
+            <div class="meta">
+              <div class="box">
+                <div class="box-head"><span>stelint <code id="diag-file" data-nolint>retry.rs</code></span><span id="diag-count" class="muted">0 errors</span></div>
+                <ul class="diags" id="diags" data-nolint></ul>
+              </div>
+              <div class="box">
+                <div class="box-head"><span><code>.stelint/DICTIONARY.md</code> of this example</span><span>terms</span></div>
+                <table class="dict"><tbody id="dict" data-nolint></tbody></table>
+                <p class="box-foot">Each diagnostic on this page comes from a run of stelint.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="strip two rv">
+            <div><span class="v"><span class="err" id="n-diags">87</span> <span class="arrow">→</span> <span class="ok">0</span></span><span class="k">errors in 4 examples</span></div>
+            <div><span class="v">0</span><span class="k">LLM calls in a check</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 single sentences -->
+      <section id="problem">
+        <div class="wrap">
+          <h2 class="rv wide">Six sentences of an agent that stelint does not accept.</h2>
+          <p class="lede rv">
+            The project dictionary of these examples has the terms <code>importer</code>, <code>batch</code> and
+            <code>archive folder</code>.
+          </p>
+          <div class="pains cases rv" id="cases" data-nolint></div>
+        </div>
+      </section>
+
+      <!-- 03 the rules -->
+      <section id="principles">
+        <div class="wrap std">
+          <div>
+            <h2 class="rv">stelint accepts only approved words and short sentences.</h2>
+            <p class="lede rv">Each entry of a word list gives one word in one part of speech. An agent cannot use an approved noun as a verb. The writing guides give these rules to the agent before it writes.</p>
+          </div>
+          <div class="facts rv">
+            <div class="fact"><span class="v">1</span><span class="k">part of speech in each entry of a word list</span></div>
+            <div class="fact"><span class="v">1</span><span class="k">fact or instruction in each sentence</span></div>
+            <div class="fact"><span class="v">20</span><span class="k">words or less in an instruction</span></div>
+            <div class="fact"><span class="v">25</span><span class="k">words or less in a descriptive sentence</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 two parts -->
+      <section id="two-parts">
+        <div class="wrap">
+          <h2 class="rv wide">stelint checks the text, and the agent corrects it.</h2>
+
+          <div class="duo rv">
+            <div class="part core">
+              <span class="kind">Deterministic</span>
+              <h3>stelint</h3>
+              <ul>
+                <li>The same text always gives the same diagnostics.</li>
+                <li>No LLM and no network in a check.</li>
+                <li>Each diagnostic tells how to correct the text.</li>
+              </ul>
+            </div>
+            <div class="wire" aria-hidden="true">
+              <div class="w to"><label>text</label><span></span></div>
+              <div class="w back"><label>diagnostics</label><span></span></div>
+            </div>
+            <div class="part agent">
+              <span class="kind">Not deterministic</span>
+              <h3>The agent</h3>
+              <ul>
+                <li>It reads the code that the comment is about.</li>
+                <li>It writes the text again until the check passes.</li>
+                <li>It adds a term to the dictionary when the project must have one.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="loop rv" id="loop">
+            <div><span class="s">1 · agent</span>Writes a comment.</div>
+            <div><span class="s">2 · stelint</span>Finds 25 errors.</div>
+            <div><span class="s">3 · agent</span>Reads each help text.</div>
+            <div><span class="s">4 · agent</span>Writes the comment again.</div>
+            <div><span class="s">5 · stelint</span>0 errors. Commit.</div>
+          </div>
+          <p class="rv"><a class="textlink" href="how.html">See one sentence go through stelint →</a></p>
+        </div>
+      </section>
+
+      <!-- 05 your dictionary -->
+      <section id="dictionary">
+        <div class="wrap split">
+          <div>
+            <h2 class="rv">Your dictionary gives each object one name.</h2>
+            <p class="lede rv">
+              A word that is not in your word lists or your dictionary is an error. To use a new name for an object,
+              the agent must add it to the dictionary, and you see it in the diff.
+            </p>
+          </div>
+          <div class="rv">
+            <div class="file">
+              <div class="file-head"><span><code>.stelint/DICTIONARY.md</code></span><span>project terms</span></div>
+              <pre data-nolint><span class="h">| Term         | Meaning                                |</span>
+<span class="c">|--------------|----------------------------------------|</span>
+| <span class="s">price cache</span>  | The prices in memory: <span class="cy">`PriceCache`</span>.    |
+| <span class="s">price feed</span>   | The service that gives the quotes.     |
+| <span class="s">stale price</span>  | A price older than the time limit.     |
+| <span class="s">to refresh</span>   | A task gets a new price from the feed. |</pre>
+            </div>
+            <div class="file">
+              <div class="file-head"><span><code>.stelint/config.toml</code></span><span>configuration</span></div>
+              <pre data-nolint><span class="k">[words]</span>
+lists = [<span class="s">"stelint:software"</span>, <span class="s">"~/.stelint/words/english.toml"</span>]
+<span class="c"># stelint also reads each list in .stelint/words/</span>
+
+<span class="k">[rules.sentence-length]</span>
+level = <span class="s">"error"</span>
+descriptive = <span class="cy">25</span>
+instruction = <span class="cy">20</span></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 try -->
+      <section id="try">
+        <div class="wrap">
+          <h2 class="rv wide">Try stelint on your project with three commands.</h2>
+          <div class="steps">
+            <div class="step rv">
+              <span class="num">01</span>
+              <h3>Install stelint</h3>
+              <p>The script puts the binary in <code>~/.local/bin</code>.</p>
+              <div class="cmd" data-nolint><span class="ps">$ </span><span class="c">gh release download -R serejke/stelint -p install.sh -O - | sh</span></div>
+            </div>
+            <div class="step rv">
+              <span class="num">02</span>
+              <h3>Install the part-of-speech model</h3>
+              <p>The first installation downloads approximately 1 GB. A check does not use the network.</p>
+              <div class="cmd" data-nolint><span class="ps">$ </span><span class="c">stelint model update</span></div>
+            </div>
+            <div class="step rv">
+              <span class="num">03</span>
+              <h3>Start stelint in your project</h3>
+              <p>It writes <code>.stelint/config.toml</code> and the rules for the agent in <code>.claude/rules/</code>. Then the agent runs <code>stelint</code> and corrects the text.</p>
+              <div class="cmd" data-nolint><span class="ps">$ </span><span class="c">stelint init</span></div>
+            </div>
+          </div>
+
+          <div class="note rv">
+            <p>stelint has built-in word lists for the terms of software and for numbers. A word list is a TOML file. Put the word lists of your project in <code>.stelint/words/</code>.</p>
+            <p>stelint is in beta. Its writer uses it in each project.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="big-end" aria-hidden="true">stelint</div>
+
+    <footer>
+      <div class="wrap">
+        <div>
+          <p>stelint 0.2 is in beta. It reads Rust comments, Rust doc comments and Markdown files.</p>
+        </div>
+        <span class="pass" title="The prose of each page passes stelint">✓ This page passes stelint</span>
+      </div>
+    </footer>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/site.js"></script>
+  </body>
+</html>

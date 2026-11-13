@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How stelint works</title>
+    <meta name="description" content="One Rust doc comment goes through stelint, from the source file to the diagnostics and the corrected comment." />
+    <meta name="theme-color" content="#050506" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="./"><span class="brand-mark" aria-hidden="true"></span>stelint</a>
+        <span class="chip">beta</span>
+        <nav class="nav" aria-label="Pages">
+          <a href="./">Start</a>
+          <a href="how.html" aria-current="page">How it works</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero">
+        <div class="wrap">
+          <h1 class="rv">How stelint works</h1>
+          <p class="lede rv">
+            stelint is a compiler for prose. This page follows one comment through the check.
+          </p>
+          <div class="file rv" style="margin-top: 40px">
+            <div class="file-head"><span><code>src/lib.rs</code></span><span>the input</span></div>
+            <pre data-nolint><span class="c">/// Retries `req` on transient failures, e.g. if the response isn't [`Ok`].</span>
+<span class="k">pub fn</span> send(req: Request) -> Result&lt;Response, SendError&gt; { <span class="d">…</span> }</pre>
+          </div>
+        </div>
+      </section>
+
+      <section style="padding-top: 72px">
+        <div class="wrap">
+          <h2 class="rv wide">How stelint finds four errors in one comment.</h2>
+
+          <div class="pipeline">
+            <div class="pstep done rv">
+              <div class="side">
+                <span class="no">step 1</span>
+                <h3>Find the prose</h3>
+                <p>stelint reads the comments of a Rust file and the text of a Markdown file. Code in backticks stays code. The rules do not read it.</p>
+              </div>
+              <div class="viz" data-nolint>
+                <span class="lbl">the prose of the comment</span>
+                <div class="row">Retries <span class="cy">`req`</span> on transient failures, e.g. if the response isn't <span class="cy">[`Ok`]</span>.</div>
+              </div>
+            </div>
+
+            <div class="pstep done rv">
+              <div class="side">
+                <span class="no">step 2</span>
+                <h3>Find the part of speech</h3>
+                <p>A part-of-speech model on your computer gives each word its part of speech. The same sentence always gets the same result.</p>
+              </div>
+              <div class="viz" data-nolint>
+                <span class="lbl">part of speech</span>
+                <div class="toks">
+                  <span class="tok">Retries<small>NOUN</small></span><span class="tok cd">`req`<small>code</small></span><span class="tok">on<small>ADP</small></span><span class="tok">transient<small>ADJ</small></span><span class="tok">failures<small>NOUN</small></span><span class="tok">,<small>PUNCT</small></span><span class="tok">e.g.<small>ADV</small></span><span class="tok">if<small>SCONJ</small></span><span class="tok">the<small>DET</small></span><span class="tok">response<small>NOUN</small></span><span class="tok">isn't<small>AUX</small></span><span class="tok cd">[`Ok`]<small>code</small></span><span class="tok">.<small>PUNCT</small></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pstep fail rv">
+              <div class="side">
+                <span class="no">step 3</span>
+                <h3>Check the words and the sentences</h3>
+                <p>Each word must be in a word list or in the project dictionary, with that part of speech. The rules also check the length of each sentence.</p>
+              </div>
+              <div class="viz" data-nolint>
+                <span class="lbl">words</span>
+                <div class="toks">
+                  <span class="tok good">Retries<small>stelint:software</small></span><span class="tok bad">transient<small>not in a list</small></span><span class="tok bad">failures<small>not approved</small></span><span class="tok bad">e.g.<small>abbreviation</small></span><span class="tok good">response<small>stelint:software</small></span><span class="tok bad">isn't<small>contraction</small></span>
+                </div>
+                <span class="lbl">sentence</span>
+                <div class="row"><span class="ok">✓</span> 13 words, limit 25</div>
+              </div>
+            </div>
+
+            <div class="pstep fail rv">
+              <div class="side">
+                <span class="no">step 4</span>
+                <h3>Report</h3>
+                <p>Each diagnostic gives the line, the column and a help text. The agent reads the help text.</p>
+              </div>
+              <div class="viz" data-nolint>
+<div class="row"><span class="err">error[vocabulary]</span>: "transient" is in no word list, dictionary or crate term
+<span class="faint">  --></span> src/lib.rs:1:22
+<span class="faint">  = help:</span> write the text again with different words, or add the word to `.stelint/DICTIONARY.md`
+
+<span class="err">error[vocabulary]</span>: "failures" is not an approved noun
+<span class="faint">  --></span> src/lib.rs:1:32
+
+<span class="err">error[latin-abbreviation]</span>: "e.g." is an abbreviation
+<span class="faint">  --></span> src/lib.rs:1:42
+<span class="faint">  = help:</span> write "for example"
+
+<span class="err">error[contraction]</span>: "isn't" is a contraction
+<span class="faint">  --></span> src/lib.rs:1:63
+<span class="faint">  = help:</span> write the full words
+
+<span class="err">4 errors</span>, 0 warnings</div>
+              </div>
+            </div>
+
+            <div class="pstep done rv">
+              <div class="side">
+                <span class="no">the agent</span>
+                <h3>Write it again</h3>
+                <p>The agent reads the help texts and the code. It writes the comment again with approved words.</p>
+              </div>
+              <div class="viz" data-nolint>
+                <div class="row"><span class="faint">/// Sends `req` again if the response is not [`Ok`].</span></div>
+                <div class="row"> </div>
+                <div class="row"><span class="faint">$</span> stelint src/lib.rs</div>
+                <div class="row"><span class="ok">0 errors</span>, 0 warnings</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap split">
+          <div>
+            <h2 class="rv">The rules go to the agent before it writes.</h2>
+            <p class="lede rv">
+              <code>stelint init</code> writes the writing guides of Claude Code in <code>.claude/rules/</code>. The agent
+              reads them before it writes a comment. It also reads the project dictionary, because
+              <code>stelint-project.md</code> imports it.
+            </p>
+            <p class="rv">
+              A project with many violations can start with a baseline. Then the check fails only on new violations.
+            </p>
+          </div>
+          <div class="rv">
+            <div class="file">
+              <div class="file-head"><span><code>.claude/rules/</code></span><span>writing guides</span></div>
+              <pre data-nolint><span class="s">stelint-prose.md</span>    <span class="c"># the rules of the prose, each with its rule id</span>
+<span class="s">stelint-names.md</span>    <span class="c"># names of the code from the dictionary</span>
+<span class="s">stelint-check.md</span>    <span class="c"># when to run stelint, how to correct</span>
+<span class="cy">stelint-project.md</span>  <span class="c"># your rules: the reader, the sections</span></pre>
+            </div>
+            <div class="file">
+              <div class="file-head"><span><code>stelint-prose.md</code></span><span>a part</span></div>
+              <pre data-nolint>14. Write a descriptive sentence with a maximum of 25
+    words. Write an instruction with a maximum of 20
+    words (<span class="cy">`sentence-length`</span>).
+15. Write one fact or one instruction in each sentence.
+16. Use the active voice. Identify the actor.</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <div>
+          <p>stelint 0.2 is in beta. It reads Rust comments, Rust doc comments and Markdown files.</p>
+        </div>
+        <span class="pass" title="The prose of each page passes stelint">✓ This page passes stelint</span>
+      </div>
+    </footer>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/site.js"></script>
+  </body>
+</html>
