@@ -1,0 +1,8 @@
+# The configuration for the prose of this website. `scripts/check_prose.py`
+# copies the folder `.stelint/` into a temporary project with the text of
+# each page.
+[files]
+include = ["**/*.md"]
+
+[words]
+lists = ["stelint:software", "stelint:numbers", "stelint:stelint", "~/.stelint/words/english.toml"]
