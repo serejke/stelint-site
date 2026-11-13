@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>stelint: lint the docs that your agent writes</title>
+    <meta name="description" content="Agents write more comments and docs than anyone reads. stelint checks them against the terms of your project and fails the build on unclear text. Deterministic, no LLM." />
+    <meta name="theme-color" content="#faf9f5" />
+    <meta property="og:title" content="stelint: lint the docs that your agent writes" />
+    <meta property="og:description" content="Agents write more comments and docs than anyone reads. stelint fails the build on unclear text, with no LLM in the check." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="./"><span class="brand-mark" aria-hidden="true"></span>stelint</a>
+        <span class="chip">beta</span>
+        <nav class="nav" aria-label="Pages">
+          <a href="./" aria-current="page">Start</a>
+          <a href="how.html">How it works</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- hero -->
+      <section class="hero">
+        <div class="wrap">
+          <div class="welcome rv">
+            <p class="eyebrow"><span class="n">stelint 0.3</span> Rust and Markdown</p>
+            <h1>Lint the docs that <span class="ok">your agent writes.</span></h1>
+            <div class="hero-sub">
+              <div>
+                <p class="lede">
+                  Agents write more comments and docs than you can read. They give one object three names. They use
+                  words that have no clear meaning. They write two steps that do not agree.
+                </p>
+                <p class="lede"><b>The next agent reads this text and obeys it.</b></p>
+                <p class="lede">
+                  stelint checks each comment and Markdown file against the terms of your project. A bad sentence fails
+                  the check, and the agent writes it again.
+                </p>
+                <div class="actions">
+                  <a class="btn primary" href="#try">Try it</a>
+                  <a class="btn" href="how.html">How it works</a>
+                </div>
+              </div>
+              <div class="term" aria-label="An agent runs stelint">
+                <div id="term-body" data-nolint></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 01 the problem: single sentences -->
+      <section id="problem" data-n="01">
+        <div class="wrap">
+          <h2 class="rv wide">These sentences look correct in a diff.</h2>
+          <p class="lede rv">
+            stelint finds errors in each one. The dictionary of these examples has the terms <code>importer</code>,
+            <code>batch</code> and <code>archive folder</code>.
+          </p>
+          <div class="pains cases rv" id="cases" data-nolint></div>
+        </div>
+      </section>
+
+      <!-- 02 the editor -->
+      <section id="editor" data-n="02">
+        <div class="wrap">
+          <h2 class="rv wide">One project, before and after the check.</h2>
+          <p class="lede rv">An agent wrote these four files. Select a file. Put the pointer on an error to see its help text.</p>
+
+          <div class="stage rv" id="stage">
+            <div class="pr">
+              <div class="files" id="files" role="tablist" aria-label="Files of the project" data-nolint></div>
+              <div class="pr-main">
+                <div class="file-bar">
+                  <code class="file-path" id="file-path" data-nolint></code>
+                  <div class="toggle" id="view-toggle" role="group" aria-label="View">
+                    <button type="button" data-v="before">Before</button>
+                    <button type="button" data-v="split">Compare</button>
+                    <button type="button" data-v="after">After</button>
+                  </div>
+                </div>
+                <p class="pain-line" id="pain-line" data-nolint></p>
+                <div class="compare-wrap">
+                  <div class="compare" id="compare" data-nolint></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="meta">
+              <div class="box">
+                <div class="box-head"><span>stelint <code id="diag-file" data-nolint></code></span><span id="diag-count" class="muted" data-nolint></span></div>
+                <ul class="diags" id="diags" data-nolint></ul>
+              </div>
+              <div class="box">
+                <div class="box-head"><span>the dictionaries of this file</span></div>
+                <div class="dict-scroll">
+                  <table class="dict"><tbody id="dict" data-nolint></tbody></table>
+                </div>
+                <p class="box-foot">Each diagnostic comes from a run of stelint.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 why a check: the alternatives and the loop -->
+      <section id="two-parts" data-n="03">
+        <div class="wrap">
+          <h2 class="rv wide">A rule in <code>CLAUDE.md</code> is a request. A failed check is not.</h2>
+
+          <div class="pains alts rv">
+            <article class="pain">
+              <span class="tag">a rule</span>
+              <h3>The agent does not obey it.</h3>
+              <p>In a long session, the rule is one line of many. No check fails, thus you do not see the error.</p>
+            </article>
+            <article class="pain">
+              <span class="tag">an LLM</span>
+              <h3>The result changes.</h3>
+              <p>The same text can pass one time and fail the next time. Each check uses tokens and time.</p>
+            </article>
+            <article class="pain">
+              <span class="tag">a person</span>
+              <h3>There is too much text.</h3>
+              <p>An agent writes a hundred lines of comments in one minute. You read the code, not the comments.</p>
+            </article>
+          </div>
+
+          <p class="lede rv after-pains">
+            A type checker finds errors in code. stelint finds errors in text. It has no LLM and no network. The same
+            text always gets the same diagnostics, and each diagnostic tells the agent how to correct the text.
+          </p>
+
+          <div class="loop rv" id="loop">
+            <div><span class="s">agent</span>Writes a comment.</div>
+            <div><span class="s">stelint</span>Finds the errors.</div>
+            <div><span class="s">agent</span>Reads each help text.</div>
+            <div><span class="s">agent</span>Writes the comment again.</div>
+            <div><span class="s">stelint</span>Finds no errors. Commit.</div>
+          </div>
+          <p class="rv"><a class="textlink" href="how.html">See one comment go through stelint →</a></p>
+        </div>
+      </section>
+
+      <!-- 04 layered dictionaries -->
+      <section id="layers" data-n="04">
+        <div class="wrap">
+          <h2 class="rv wide">Dictionaries in layers.</h2>
+          <p class="lede rv">
+            The project dictionary applies to each file. A module dictionary applies only to its module, and Claude Code
+            reads it when it opens a file there.
+          </p>
+
+          <div class="layers rv">
+            <div class="layer-files" id="layer-files" data-nolint></div>
+            <div class="layer-runs">
+              <div class="file">
+                <div class="file-head"><span>one word in two modules</span></div>
+                <pre id="layer-find" data-nolint></pre>
+              </div>
+              <div class="file">
+                <div class="file-head"><span>a term out of its module</span></div>
+                <pre id="layer-check" data-nolint></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 try -->
+      <section id="try" data-n="05">
+        <div class="wrap">
+          <h2 class="rv wide">Install.</h2>
+          <div class="steps">
+            <div class="step rv">
+              <span class="num">with Claude Code</span>
+              <div class="cmd" data-nolint><span class="ps">&gt; </span><span class="c">/plugin marketplace add serejke/stelint</span>
+<span class="ps">&gt; </span><span class="c">/plugin install stelint@stelint</span>
+<span class="ps">&gt; </span><span class="c">/stelint:init</span>          <span class="ps"># stelint, Stanza, writing guides</span>
+<span class="ps">&gt; </span><span class="c">/stelint:word-list</span>     <span class="ps"># the STE word list, from its PDF</span>
+<span class="ps">&gt; </span><span class="c">/stelint:dictionary</span>    <span class="ps"># the dictionaries of your project</span>
+<span class="ps">&gt; </span><span class="c">/stelint:correct</span>       <span class="ps"># agents correct the errors</span></div>
+            </div>
+            <div class="step rv">
+              <span class="num">in a terminal</span>
+              <div class="cmd" data-nolint><span class="ps">$ </span><span class="c">gh release download -R serejke/stelint -p install.sh -O - | sh</span>
+<span class="ps">$ </span><span class="c">stelint model update</span>     <span class="ps"># Stanza, 1 GB, one time</span>
+<span class="ps">$ </span><span class="c">stelint init</span>
+<span class="ps">$ </span><span class="c">stelint</span></div>
+            </div>
+          </div>
+          <p class="note rv">stelint does not include the STE word list. Without it, stelint does not check the words.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <div>
+          <p>stelint 0.3 is in beta. ASD-STE100 is a trademark of ASD, and stelint does not come from ASD.</p>
+        </div>
+        <span class="pass" title="The prose of each page passes stelint">✓ This page passes stelint</span>
+      </div>
+    </footer>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/site.js"></script>
+  </body>
+</html>
